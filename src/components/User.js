@@ -6,7 +6,7 @@ class User extends React.Component {
       this.props.githubUser;
     return (
       <div className='github-account'>
-        <img width='200' src={avatar_url}></img>
+        <img width='350' src={avatar_url}></img>
         <div className='github-info'>
           <h2>{name}</h2>
           <p>({login})</p>

@@ -11,9 +11,9 @@ class App extends React.Component {
     username: '',
   };
 
-  componentDidMount() {
+  loadUserData = (username) => {
     axios
-      .get(`https://api.github.com/users/lizzythomson`)
+      .get(`https://api.github.com/users/${username}`)
       .then((response) => {
         this.setState({ ...this.state, githubUser: response.data });
       })
@@ -22,14 +22,17 @@ class App extends React.Component {
       });
 
     axios
-      .get(`https://api.github.com/users/lizzythomson/followers`)
+      .get(`https://api.github.com/users/${username}/followers`)
       .then((response) => {
-        console.log('HiyA', response.data);
         this.setState({ ...this.state, followers: response.data });
       })
       .catch((error) => {
         console.log('Error: ', error);
       });
+  };
+
+  componentDidMount() {
+    this.loadUserData('lizzythomson');
   }
 
   handleChange = (event) => {
@@ -39,34 +42,21 @@ class App extends React.Component {
   handleSubmit = (event) => {
     event.preventDefault();
     const username = this.state.username;
-    axios
-      .get(`https://api.github.com/users/${username}`)
-      .then((resp) => {
-        this.setState({ ...this.state, githubUser: resp.data, username: '' });
-      })
-      .catch((err) => {
-        console.log('Error: ', err);
-      });
-
-    axios
-      .get(`https://api.github.com/users/${username}/followers`)
-      .then((resp) => {
-        this.setState({ ...this.state, followers: resp.data });
-      })
-      .catch((err) => {
-        console.log('Error: ', err);
-      });
+    this.loadUserData(username);
+    this.setState({ ...this.state, username: '' });
   };
 
   render() {
     return (
       <div>
-        <div className='header'>
-          <h1>GitHub Info</h1>
-          <form onSubmit={this.handleSubmit}>
-            <input value={this.state.username} onChange={this.handleChange} />
-            <button className='search-btn'>Search</button>
-          </form>
+        <div className='app-container'>
+          <div className='header'>
+            <h1>GitHub Info</h1>
+            <form onSubmit={this.handleSubmit}>
+              <input value={this.state.username} onChange={this.handleChange} />
+              <button className='search-btn'>Search</button>
+            </form>
+          </div>
           {this.state.githubUser === null || this.state.followers === null ? (
             <h1>Loading...</h1>
           ) : (
