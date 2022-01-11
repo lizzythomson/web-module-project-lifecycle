@@ -30,7 +30,7 @@ class App extends React.Component {
     axios
       .get(`https://api.github.com/users/${username}`)
       .then((resp) => {
-        console.log(resp);
+        this.setState({ ...this.state, githubUser: resp.data, username: '' });
       })
       .catch((err) => {
         console.log('Error: ', error);
