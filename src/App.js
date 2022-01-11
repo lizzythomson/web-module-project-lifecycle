@@ -46,6 +46,10 @@ class App extends React.Component {
     this.setState({ ...this.state, username: '' });
   };
 
+  handleClick = (username) => {
+    this.loadUserData(username);
+  };
+
   render() {
     return (
       <div>
@@ -62,7 +66,10 @@ class App extends React.Component {
           ) : (
             <div className='main-content'>
               <User githubUser={this.state.githubUser} />
-              <FollowerList followers={this.state.followers} />
+              <FollowerList
+                followers={this.state.followers}
+                handleClick={this.handleClick}
+              />
             </div>
           )}
         </div>
