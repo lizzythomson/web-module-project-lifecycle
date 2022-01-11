@@ -1,11 +1,13 @@
 import React from 'react';
 import axios from 'axios';
 import User from './components/User';
+import FollowerList from './components/FollowerList';
 import './App.css';
 
 class App extends React.Component {
   state = {
     githubUser: null,
+    followers: null,
     username: '',
   };
 
@@ -14,6 +16,16 @@ class App extends React.Component {
       .get(`https://api.github.com/users/lizzythomson`)
       .then((response) => {
         this.setState({ ...this.state, githubUser: response.data });
+      })
+      .catch((error) => {
+        console.log('Error: ', error);
+      });
+
+    axios
+      .get(`https://api.github.com/users/lizzythomson/followers`)
+      .then((response) => {
+        console.log('HiyA', response.data);
+        this.setState({ ...this.state, followers: response.data });
       })
       .catch((error) => {
         console.log('Error: ', error);
@@ -33,7 +45,16 @@ class App extends React.Component {
         this.setState({ ...this.state, githubUser: resp.data, username: '' });
       })
       .catch((err) => {
-        console.log('Error: ', error);
+        console.log('Error: ', err);
+      });
+
+    axios
+      .get(`https://api.github.com/users/${username}/followers`)
+      .then((resp) => {
+        this.setState({ ...this.state, followers: resp.data });
+      })
+      .catch((err) => {
+        console.log('Error: ', err);
       });
   };
 
@@ -46,30 +67,12 @@ class App extends React.Component {
             <input value={this.state.username} onChange={this.handleChange} />
             <button className='search-btn'>Search</button>
           </form>
-          {this.state.githubUser === null ? (
+          {this.state.githubUser === null || this.state.followers === null ? (
             <h1>Loading...</h1>
           ) : (
             <div className='main-content'>
               <User githubUser={this.state.githubUser} />
-              <div className='followers'>
-                <h2>Followers</h2>
-                <div className='follower'>
-                  <img></img>
-                  <p>Follower Name</p>
-                </div>
-                <div className='follower'>
-                  <img></img>
-                  <p>Follower Name</p>
-                </div>
-                <div className='follower'>
-                  <img></img>
-                  <p>Follower Name</p>
-                </div>
-                <div className='follower'>
-                  <img></img>
-                  <p>Follower Name</p>
-                </div>
-              </div>
+              <FollowerList followers={this.state.followers} />
             </div>
           )}
         </div>
